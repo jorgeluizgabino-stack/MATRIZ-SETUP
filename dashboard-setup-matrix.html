@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup Matrix Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { margin: 20px; }
+        .machine-selector { margin-bottom: 20px; }
+        .setup-group { display: flex; flex-wrap: wrap; }
+        .group-card { border: 1px solid #ccc; border-radius: 5px; padding: 10px; margin: 5px; flex: 1; min-width: 200px; }
+        .product { padding: 5px; margin: 5px; border-radius: 5px; }
+        .verde { background-color: #d2f7d2; }
+        .amarelo { background-color: #fdfd96; }
+        .laranja { background-color: #f7d2d2; }
+        .vermelho { background-color: #f7c1c1; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Dashboard Setup Matrix</h1>
+        <div class="machine-selector">
+            <label for="machineSelect">Select Machine:</label>
+            <select id="machineSelect" onchange="filterProducts()">
+                <option value="all">All Machines</option>
+                <option value="machine1">Machine Group 1</option>
+                <option value="machine2">Machine Group 2</option>
+            </select>
+        </div>
+        <div class="search-filter">
+            <input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="Search for products..">
+        </div>
+        <div class="setup-group">
+            <!-- Dynamic product cards will be inserted here. -->
+        </div>
+        <div id="optimizationRecommendations">
+            <h2>Optimization Recommendations</h2>
+            <p>Optimize based on setup times for efficient scheduling.</p>
+        </div>
+    </div>
+    <script>
+        const products = getSampleProducts();
+
+        function getSampleProducts() {
+            // Generate 150 test products with random setup times and machine groups
+            const sampleProducts = [];
+            for (let i = 0; i < 150; i++) {
+                sampleProducts.push({
+                    name: `Product ${i + 1}`,
+                    setupTime: Math.floor(Math.random() * 4), // Random setup times from 0 to 3
+                    group: `machine${Math.floor(Math.random() * 2) + 1}`
+                });
+            }
+            return sampleProducts;
+        }
+
+        function displayProducts() {
+            const groupContainer = document.querySelector('.setup-group');
+            groupContainer.innerHTML = ''; // Clear existing products
+            const selectedMachine = document.getElementById('machineSelect').value;
+            const filteredProducts = products.filter(product => selectedMachine === 'all' || product.group === selectedMachine);
+
+            filteredProducts.forEach(product => {
+                const productDiv = document.createElement('div');
+                productDiv.className = `product ${getColorClass(product.setupTime)}`;
+                productDiv.innerText = product.name + ` (Setup Time: ${product.setupTime})`;
+                groupContainer.appendChild(productDiv);
+            });
+        }
+
+        function getColorClass(setupTime) {
+            switch (setupTime) {
+                case 0: return 'verde';
+                case 1: return 'amarelo';
+                case 2: return 'laranja';
+                case 3: return 'vermelho';
+            }
+        }
+
+        function filterProducts() {
+            displayProducts();
+        }
+
+        function searchProducts() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const productsDivs = document.querySelectorAll('.product');
+            productsDivs.forEach(div => {
+                div.style.display = div.innerText.toLowerCase().includes(input) ? "" : "none";
+            });
+        }
+
+        // Initial display of products
+        displayProducts();
+    </script>
+</body>
+</html>
